@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace N_m3u8DL_RE.DownloadManager
 {
@@ -102,13 +103,20 @@ namespace N_m3u8DL_RE.DownloadManager
                 name = OtherUtil.GetValidFileName(segment.Url.Split('?').Last(), "_");
             }
 
-            if (hls && allHasDatetime)
+            if (hls)
             {
-                name = GetUnixTimestamp(segment.DateTime!.Value).ToString();
-            }
-            else if (hls)
-            {
-                name = segment.Index.ToString();
+                Match match = Regex.Match(segment.Url, @"/([^/]+)\.\w+");
+
+                if (match.Success)
+                {
+                    name = match.Groups[1].Value;
+                }
+                else
+                {
+                    name = segment.Index.ToString();
+                }
+
+                Logger.Info(name + " " + segment.DateTime!.Value.ToLocalTime().ToString("F"));
             }
 
             return name;
