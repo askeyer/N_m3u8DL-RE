@@ -105,7 +105,7 @@ namespace N_m3u8DL_RE.DownloadManager
 
             if (hls)
             {
-                Match match = Regex.Match(segment.Url, @"/([^/]+)\.\w+");
+                Match match = Regex.Match(segment.Url, @"/([^/]+)\.\w+(?=\?|$)");
 
                 if (match.Success)
                 {
@@ -116,7 +116,7 @@ namespace N_m3u8DL_RE.DownloadManager
                     name = segment.Index.ToString();
                 }
 
-                Logger.Info(name + " " + segment.DateTime!.Value.ToLocalTime().ToString("F"));
+                Logger.Info(name + " " + segment.DateTime!.Value.ToLocalTime().ToString("F") + " " + segment.Index.ToString() + " " + segment.Duration.ToString());
             }
 
             return name;
